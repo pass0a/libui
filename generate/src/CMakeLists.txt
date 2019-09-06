@@ -17,8 +17,10 @@ add_library(ui SHARED
 	${PROJECT_SOURCE_DIR}/src/export.def
 	${PROJECT_SOURCE_DIR}/src/plugin.h
 	)
+ADD_EXECUTABLE(uitest ${PROJECT_SOURCE_DIR}/test/index.cpp)
 include_directories(${OpenCV_INCLUDE_DIRS})
 target_link_libraries(ui "libui")
+target_link_libraries(uitest "libui")
 install(TARGETS ui RUNTIME DESTINATION node_modules/libui)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/modules/stage/ DESTINATION node_modules/libui)
 # install(DIRECTORY ${PROJECT_SOURCE_DIR}/test/ DESTINATION test)

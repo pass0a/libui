@@ -1,9 +1,36 @@
 #ifndef __PASSOA_PLUGIN_HPP__
 #define __PASSOA_PLUGIN_HPP__
 
+class FnPtr {
+public:
+	void wrap() {
+		run();
+		delete this;
+	}
+    virtual void run() = 0;
+	virtual ~FnPtr() {}
+};
+
+template<typename T>
+class binder :public FnPtr {
+public:
+    binder(T x) :inst(x) {
+    }
+    virtual void run() {
+        inst();
+    }
+    virtual ~binder() {}
+private:
+    T inst;
+};
+
 
 #define PA_VARARGS -1
 typedef void pa_context;
+typedef void(*pa_io_push)(FnPtr* );
+typedef void(*pa_vp)(void*);
+typedef void*(*pa_p)();
+typedef void(*pa_vfp)(pa_vp ,void*);
 typedef void(*pa_vpi)(pa_context*, int);
 typedef void(*pa_vppi)(pa_context*, void*, int);
 typedef void(*pa_vpd)(pa_context*, double);
@@ -25,13 +52,15 @@ typedef bool(*pa_vpu)(pa_context*, unsigned int);
 
 typedef int(*pa_c_function)(pa_context *ctx);
 
+
 struct pa_function_list_entry {
     const char *key;
     pa_c_function value;
     int nargs;
 };
 typedef int(*pa_put_function_list)(pa_context*, int, const pa_function_list_entry*);
-
+typedef int(*pa_loop_step)(void);
+typedef int(*pa_push_loop)(pa_loop_step );
 struct pa_plugin {
     pa_context* ctx;
     pa_put_function_list put_function_list;
@@ -65,7 +94,21 @@ struct pa_plugin {
     pa_ppi push_fixed_buffer;
     pa_vp push_null;
     pa_vpu push_uint;
+    pa_io_push post_io;
+    pa_bpi is_function;
+    pa_p keep_io;
+    pa_vp release_io;
+    pa_bpi is_array;
+    pa_bpii get_prop_index;
+    pa_bpis get_prop_string;
+    pa_ipi get_length;
+    pa_push_loop push_loop;
 };
+
+template<typename T>
+void bind_io(pa_plugin& g, T x) {
+    g.post_io(new binder<T>(x));
+}
 
 #endif // !__PASSOA_PLUGIN_HPP__
 
