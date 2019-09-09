@@ -6,15 +6,24 @@
 #include <thread>
 
 extern struct pa_plugin gp;
-struct CallNode {
-    pa_context* ctx;
-    int ref;
-};
-void onCall(CallNode* pcn) {
-    gp.eval_string(pcn->ctx, "(passoa_callbacks.callonce.bind(passoa_callbacks))");
-    gp.push_int(pcn->ctx, pcn->ref);
-    gp.call(pcn->ctx, 1);
-    gp.pop(pcn->ctx);
+int gref = -1;
+pa_context* gctx=NULL;
+void onCall(void* ptr,char* ev) {
+    if (gctx) {
+        gp.eval_string(gctx, "(passoa_callbacks.callonce.bind(passoa_callbacks))");
+        gp.push_int(gctx, gref);
+        gp.push_pointer(gctx, ptr);
+        gp.push_string(gctx, ev);
+        gp.call(gctx, 3);
+        gp.pop(gctx);
+    }
+}
+int libuiHook(pa_context *ctx) {
+    if (gp.is_number(ctx, 0)) {
+        gref = gp.get_int(ctx,0);
+        gctx = ctx;
+    }
+    return 0;
 }
 int libuiOpenFile(pa_context *ctx) {
     uiWindow* w;
@@ -54,11 +63,20 @@ int libuiMain(pa_context *ctx) {
     gp.push_loop(loop_step);
     return 0;
 }
+int onClosing(uiWindow *w, void *data)
+{
+    onCall(w, "close");
+    uiQuit();
+    return 1;
+}
 int libuiNewWindow(pa_context *ctx) {
     if (gp.is_string(ctx, 0) && gp.is_number(ctx, 1) && gp.is_number(ctx, 2) && gp.is_number(ctx, 3)) {
-        gp.push_pointer(ctx,uiNewWindow(gp.get_string(ctx,0),gp.get_int(ctx,1),gp.get_int(ctx,2),gp.get_int(ctx,3)));
+        auto ptr =uiNewWindow(gp.get_string(ctx,0),gp.get_int(ctx,1),gp.get_int(ctx,2),gp.get_int(ctx,3));
+        uiWindowOnClosing(ptr,onClosing, NULL);
+        gp.push_pointer(ctx, ptr);
+        return 1;
     }
-    return 1;
+    return 0;
 }
 int libuiWindowSetMargined(pa_context *ctx) {
     if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1)) {
@@ -103,15 +121,13 @@ int libuiNewButton(pa_context *ctx) {
 }
 void onClicked(uiButton *b, void *data)
 {
-    CallNode* pcn = (CallNode*)data;
-    onCall(pcn);
-    delete pcn;
+    onCall(b,"click");
 }
 int libuiButtonOnClicked(pa_context *ctx) {
     if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1))
     {
         uiButtonOnClicked(uiButton(gp.get_pointer(ctx, 0)),
-            onClicked, new CallNode({ ctx,gp.get_int(ctx,1) }));
+            onClicked, NULL);
     }
     return 1;
 }
@@ -133,22 +149,7 @@ int libuiGridAppend(pa_context *ctx) {
     }
     return 0;
 }
-int onClosing(uiWindow *w, void *data)
-{
-    CallNode* pcn = (CallNode*)data;
-    onCall(pcn);
-    delete pcn;
-    uiQuit();
-    return 1;
-}
-int libuiWindowOnClosing(pa_context *ctx) {
-    if (gp.is_pointer(ctx,0) && gp.is_number(ctx,1))
-    {
-        uiWindowOnClosing(uiWindow(gp.get_pointer(ctx,0)),
-            onClosing, new CallNode({ ctx,gp.get_int(ctx,1) }));
-    }
-    return 1;
-}
+
 int libuiControlShow(pa_context *ctx) {
     if(gp.is_pointer(ctx,0)){
         uiControlShow(uiControl(gp.get_pointer(ctx, 0)));
@@ -156,5 +157,5 @@ int libuiControlShow(pa_context *ctx) {
     return 0;
 }
 void libuiUnload() {
-    uiUninit();
+    //uiUninit();
 }
