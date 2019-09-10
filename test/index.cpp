@@ -7,7 +7,9 @@ int onClosing(uiWindow *w, void *data)
     uiQuit();
     return 1;
 }
-
+void loop() {
+    while (uiMainStep(0));
+}
 void onClicked(uiButton *b, void *data)
 {
     char msg[32] = "Button is clicked!";
@@ -41,14 +43,14 @@ int uithread() {
     // 创建Label
     l = uiNewLabel("I am a label.");
     uiGridAppend(g, uiControl(l),
-        0, 2, 2, 1,
+        0, 0, 10, 10,
         1, uiAlignCenter, 1, uiAlignFill);
 
     // 创建Button，注册按钮点击时的回调函数
     b = uiNewButton("Click me!");
     uiButtonOnClicked(b, onClicked, l);
     uiGridAppend(g, uiControl(b),
-        0, 2, 2, 1,
+        1, 1, 10, 10,
         1, uiAlignCenter, 1, uiAlignEnd);
 
     // 注册窗口关闭时的回调函数
@@ -58,7 +60,7 @@ int uithread() {
     uiControlShow(uiControl(w));
 
     // 启动主循环
-    uiMain();
+    loop();
     return 0;
 }
 int main() {

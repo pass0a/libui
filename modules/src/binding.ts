@@ -12,7 +12,6 @@ export class uiEvent extends EventEmitter {
 	static map = new Map<any, uiEvent>();
 	readonly handle: any;
 	static onEvent(p: any, ev: string) {
-		console.log('onEvent', ev);
 		let ele = uiEvent.map.get(p);
 		if (ele) {
 			ele.emit(ev);
@@ -25,7 +24,7 @@ export class uiEvent extends EventEmitter {
 	}
 }
 
-export function openFolder() {
+export function openFolder(): string {
 	return ui.openFolder();
 }
 export function openFile() {
@@ -42,7 +41,12 @@ export function init() {
 export function exit() {}
 
 export function startLoop() {
-	return ui.main();
+	//ui.run();
+	let keep = setInterval(() => {
+		if (!ui.mainStep()) {
+			clearInterval(keep);
+		}
+	}, 10);
 }
 export function controlShow(ptr: any) {
 	return ui.controlShow(ptr);
@@ -87,13 +91,28 @@ export function gridAppend(
 	top: number,
 	xspan: number,
 	yspan: number,
-	hexpand: number,
+	hexpand: boolean,
 	halign: uiAlign,
-	vexpand: number,
+	vexpand: boolean,
 	valign: uiAlign
 ) {
-	return ui.gridAppend(g, c, left, top, xspan, yspan, hexpand, halign, vexpand, valign);
+	return ui.gridAppend(g, c, left, top, xspan, yspan, hexpand ? 1 : 0, halign, vexpand ? 1 : 0, valign);
 }
 export function newLabel(text: string) {
 	return ui.newLabel(text);
+}
+export function labelSetText(l: any, text: string) {
+	ui.labelSetText(l, text);
+}
+export function labelText(l: any): string {
+	return ui.labelText(l);
+}
+export function newHorizontalBox() {
+	return ui.newHorizontalBox();
+}
+export function newVerticalBox() {
+	return ui.newVerticalBox();
+}
+export function boxAppend(b: any, c: any, stretchy: boolean) {
+	return ui.boxAppend(b, c, stretchy);
 }

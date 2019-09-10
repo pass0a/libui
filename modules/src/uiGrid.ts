@@ -1,6 +1,7 @@
 import uiControl from './uiControl';
 import * as bind from './binding';
 export class uiGrid extends uiControl {
+	private children = new Set<uiControl>();
 	constructor() {
 		super(bind.newGrid());
 	}
@@ -12,12 +13,15 @@ export class uiGrid extends uiControl {
 		top: number,
 		xspan: number,
 		yspan: number,
-		hexpand: number,
+		hexpand: boolean,
 		halign: bind.uiAlign,
-		vexpand: number,
+		vexpand: boolean,
 		valign: bind.uiAlign
 	) {
-		return bind.gridAppend(this.handle, c.handle, left, top, xspan, yspan, hexpand, halign, vexpand, valign);
+		if (!this.children.has(c)) {
+			this.children.add(c);
+			return bind.gridAppend(this.handle, c.handle, left, top, xspan, yspan, hexpand, halign, vexpand, valign);
+		}
 	}
 	insertAt(
 		c: uiControl,

@@ -102,7 +102,8 @@ struct pa_plugin {
     pa_bpii get_prop_index;
     pa_bpis get_prop_string;
     pa_ipi get_length;
-    pa_push_loop push_loop;
+    pa_bpi is_boolean;
+    pa_bpi get_boolean;
 };
 
 template<typename T>

@@ -17,7 +17,7 @@ export class uiWindow extends uiControl {
 		return true;
 	}
 	setChild(control: uiControl) {
-		console.log('setChild:', control);
+		bind.windowSetChild(this.handle, control.handle);
 	}
 	setTitle(title: string) {}
 	getTitle(): string {

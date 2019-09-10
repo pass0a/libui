@@ -10,7 +10,7 @@ int gref = -1;
 pa_context* gctx=NULL;
 void onCall(void* ptr,char* ev) {
     if (gctx) {
-        gp.eval_string(gctx, "(passoa_callbacks.callonce.bind(passoa_callbacks))");
+        gp.eval_string(gctx, "(passoa_callbacks.call.bind(passoa_callbacks))");
         gp.push_int(gctx, gref);
         gp.push_pointer(gctx, ptr);
         gp.push_string(gctx, ev);
@@ -56,23 +56,23 @@ int libuiInit(pa_context *ctx) {
     gp.push_string(ctx, uiInit(&o));
     return 1;
 }
-int loop_step() {
-    return !uiMainStep(0);
-}
-int libuiMain(pa_context *ctx) {
-    gp.push_loop(loop_step);
+int libuiRun(pa_context *ctx) {
+    uiMain();
     return 0;
 }
-int onClosing(uiWindow *w, void *data)
-{
-    onCall(w, "close");
-    uiQuit();
+int libuiStep(pa_context *ctx) {
+    gp.push_int(ctx,uiMainStep(0));
     return 1;
 }
+
 int libuiNewWindow(pa_context *ctx) {
     if (gp.is_string(ctx, 0) && gp.is_number(ctx, 1) && gp.is_number(ctx, 2) && gp.is_number(ctx, 3)) {
         auto ptr =uiNewWindow(gp.get_string(ctx,0),gp.get_int(ctx,1),gp.get_int(ctx,2),gp.get_int(ctx,3));
-        uiWindowOnClosing(ptr,onClosing, NULL);
+        uiWindowOnClosing(ptr, [](uiWindow *w, void *data) {
+            onCall(w, "close");
+            uiQuit();
+            return 0;
+        }, NULL);
         gp.push_pointer(ctx, ptr);
         return 1;
     }
@@ -87,6 +87,21 @@ int libuiWindowSetMargined(pa_context *ctx) {
 int libuiNewGrid(pa_context* ctx) {
     gp.push_pointer(ctx,uiNewGrid());
     return 1;
+}
+int libuiNewVerticalBox(pa_context* ctx) {
+    gp.push_pointer(ctx, uiNewVerticalBox());
+    return 1;
+}
+int libuiNewHorizontalBox(pa_context* ctx) {
+    gp.push_pointer(ctx, uiNewHorizontalBox());
+    return 1;
+}
+int libuiBoxAppend(pa_context* ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_pointer(ctx, 1) && gp.is_boolean(ctx, 2)) {
+        uiBoxAppend(uiBox(gp.get_pointer(ctx, 0)),
+            uiControl(gp.get_pointer(ctx, 1)), gp.get_boolean(ctx, 2));
+    }
+    return 0;
 }
 int libuiGridSetPadded(pa_context *ctx) {
     if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1)) {
@@ -107,6 +122,18 @@ int libuiNewLabel(pa_context *ctx) {
     }
     return 1;
 }
+int libuiLabelSetText(pa_context *ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_string(ctx, 1)) {
+        uiLabelSetText(uiLabel(gp.get_pointer(ctx, 0)),gp.get_string(ctx,1));
+    }
+    return 0;
+}
+int libuiLabelText(pa_context *ctx) {
+    if (gp.is_pointer(ctx, 0)) {
+        gp.push_string(ctx,uiLabelText(uiLabel(gp.get_pointer(ctx, 0))));
+    }
+    return 0;
+}
 
 int libuiControl(pa_context *ctx) {
 
@@ -115,22 +142,15 @@ int libuiControl(pa_context *ctx) {
 
 int libuiNewButton(pa_context *ctx) {
     if (gp.is_string(ctx, 0)) {
-        gp.push_pointer(ctx, uiNewButton(gp.get_string(ctx,0)));
+        auto ptr = uiNewButton(gp.get_string(ctx, 0));
+        gp.push_pointer(ctx,ptr );
+        uiButtonOnClicked(ptr, [](uiButton *b, void *data) {
+            onCall(b, "click");
+        }, NULL);
     }
     return 1;
 }
-void onClicked(uiButton *b, void *data)
-{
-    onCall(b,"click");
-}
-int libuiButtonOnClicked(pa_context *ctx) {
-    if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1))
-    {
-        uiButtonOnClicked(uiButton(gp.get_pointer(ctx, 0)),
-            onClicked, NULL);
-    }
-    return 1;
-}
+
 int libuiGridAppend(pa_context *ctx) {
     if (gp.is_pointer(ctx, 0) && gp.get_pointer(ctx, 1)) {
         for (size_t i = 2; i < 10; i++)
@@ -139,8 +159,6 @@ int libuiGridAppend(pa_context *ctx) {
                 return 0;
             }
         }
-        int left = gp.get_int(ctx,2);
-        int top = gp.get_int(ctx, 3);
         uiGridAppend(uiGrid(gp.get_pointer(ctx, 0)), uiControl(gp.get_pointer(ctx, 1)),
             gp.get_int(ctx, 2), gp.get_int(ctx, 3),
             gp.get_int(ctx, 4), gp.get_int(ctx, 5),
