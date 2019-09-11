@@ -24,11 +24,11 @@ export class uiEvent extends EventEmitter {
 	}
 }
 
-export function openFolder(): string {
-	return ui.openFolder();
+export function openFolder(parent: any): string {
+	return ui.openFolder(parent);
 }
-export function openFile() {
-	return ui.openFile();
+export function openFile(parent: any) {
+	return ui.openFile(parent);
 }
 export function saveFile() {
 	return ui.saveFile();
@@ -127,4 +127,13 @@ export function comboboxSelected(c: any): number {
 }
 export function comboboxSetSelected(c: any, idx: number): void {
 	return ui.comboboxSetSelected(c, idx);
+}
+export function newProgressBar() {
+	return ui.newProgressBar();
+}
+export function progressBarSetValue(c: any, value: number): void {
+	return ui.progressBarSetValue(c, value);
+}
+export function msgBox(c: any, title: string, description: string, type: number): void {
+	return ui.msgBox(c, title, description, type);
 }

@@ -34,10 +34,14 @@ int libuiOpenFile(pa_context *ctx) {
 }
 int libuiOpenFolder(pa_context *ctx)
 {
+	HWND handle = NULL;
+	if (gp.is_pointer(ctx,0)) {
+		handle = (HWND)uiControlHandle(uiControl(gp.get_pointer(ctx, 0)));
+	}
     char szBuffer[MAX_PATH] = { 0 };
     BROWSEINFO bi;
     memset(&bi, 0, sizeof(BROWSEINFO));
-    bi.hwndOwner = NULL;
+    bi.hwndOwner = handle;
     bi.pszDisplayName = szBuffer;
     bi.lpszTitle = "从下面选择文件或文件夹:";
     bi.ulFlags = BIF_BROWSEINCLUDEFILES;
@@ -131,7 +135,8 @@ int libuiLabelSetText(pa_context *ctx) {
 int libuiLabelText(pa_context *ctx) {
     if (gp.is_pointer(ctx, 0)) {
         gp.push_string(ctx,uiLabelText(uiLabel(gp.get_pointer(ctx, 0))));
-    }
+		return 1;
+	}
     return 0;
 }
 
@@ -211,9 +216,20 @@ int libuiNewProgressBar(pa_context *ctx) {
     gp.push_pointer(ctx, ptr);
     return 1;
 }
-int libuiNewProgressBar(pa_context *ctx) {
+int libuiProgressBarSetValue(pa_context *ctx) {
     if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1)) {
-        uiProgressBarSetValue(uiProgressBar(gp.get_pointer(ctx, 0)), gp.get_int(ctx, 1));
+        uiProgressBarSetValue (uiProgressBar(gp.get_pointer(ctx, 0)), gp.get_int(ctx, 1));
     }
-    return 1;
+    return 0;
+}
+int libuiMsgBox(pa_context *ctx) {
+	if (gp.is_pointer(ctx, 0) && gp.is_string(ctx, 1) && gp.is_string(ctx, 2) && gp.is_number(ctx, 3)) {
+		if (gp.get_int(ctx,3)) {
+			uiMsgBoxError(uiWindow(gp.get_pointer(ctx, 0)), gp.get_string(ctx, 1), gp.get_string(ctx, 2));
+		}
+		else {
+			uiMsgBox(uiWindow(gp.get_pointer(ctx, 0)), gp.get_string(ctx, 1), gp.get_string(ctx, 2));
+		}
+	}
+	return 0;
 }

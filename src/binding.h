@@ -23,4 +23,7 @@ int libuiNewCombobox(pa_context *ctx);
 int libuiComboboxAppend(pa_context *ctx);
 int libuiComboboxSelected(pa_context *ctx);
 int libuiComboboxSetSelected(pa_context *ctx);
+int libuiNewProgressBar(pa_context *ctx);
+int libuiProgressBarSetValue(pa_context *ctx);
+int libuiMsgBox(pa_context *ctx);
 void libuiUnload();
