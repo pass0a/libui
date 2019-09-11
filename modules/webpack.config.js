@@ -7,6 +7,8 @@ module.exports = (env) => {
 	if (process.env.opt == 'dev') {
 		opt_watch = true;
 		opt_dist = 'dist';
+	} else {
+		fs.copy('package.json', 'stage/package.json');
 	}
 	const nodeConfig = {
 		// Change to your "entry-point".
