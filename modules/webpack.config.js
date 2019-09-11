@@ -67,7 +67,9 @@ module.exports = (env) => {
 			path: false,
 			tty: false,
 			module: false,
-			zlib: false
+			zlib: false,
+			__dirname: false,
+			__filename: false
 		},
 		//plugins: [ new BundleAnalyzerPlugin() ],
 		externals: [ './ui.passoa' ],
