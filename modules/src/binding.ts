@@ -116,3 +116,15 @@ export function newVerticalBox() {
 export function boxAppend(b: any, c: any, stretchy: boolean) {
 	return ui.boxAppend(b, c, stretchy);
 }
+export function newCombobox() {
+	return ui.newCombobox();
+}
+export function comboboxAppend(c: any, text: string): void {
+	return ui.comboboxAppend(c, text);
+}
+export function comboboxSelected(c: any): number {
+	return ui.comboboxSelected(c);
+}
+export function comboboxSetSelected(c: any, idx: number): void {
+	return ui.comboboxSetSelected(c, idx);
+}

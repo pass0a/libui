@@ -177,3 +177,43 @@ int libuiControlShow(pa_context *ctx) {
 void libuiUnload() {
     //uiUninit();
 }
+int libuiNewCombobox(pa_context *ctx) {
+    auto ptr = uiNewCombobox();
+    gp.push_pointer(ctx, ptr);
+    uiComboboxOnSelected(ptr, [](uiCombobox *b, void *data) {
+        onCall(b, "changed");
+    }, NULL);
+    return 1;
+}
+int libuiComboboxAppend(pa_context *ctx) {
+    if (gp.is_pointer(ctx, 0)) {
+        uiComboboxAppend(uiCombobox(gp.get_pointer(ctx, 0)), gp.get_string(ctx, 1));
+    }
+    return 0;
+}
+int libuiComboboxSelected(pa_context *ctx) {
+    if (gp.is_pointer(ctx, 0)) {
+        gp.push_int(ctx,uiComboboxSelected(uiCombobox(gp.get_pointer(ctx, 0))));
+    }
+    else {
+        gp.push_int(ctx,-1);
+    }
+    return 1;
+}
+int libuiComboboxSetSelected(pa_context *ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_number(ctx,1)) {
+        uiComboboxSetSelected(uiCombobox(gp.get_pointer(ctx, 0)),gp.get_int(ctx,1));
+    }
+    return 0;
+}
+int libuiNewProgressBar(pa_context *ctx) {
+    auto ptr = uiNewProgressBar();
+    gp.push_pointer(ctx, ptr);
+    return 1;
+}
+int libuiNewProgressBar(pa_context *ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1)) {
+        uiProgressBarSetValue(uiProgressBar(gp.get_pointer(ctx, 0)), gp.get_int(ctx, 1));
+    }
+    return 1;
+}

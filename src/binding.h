@@ -19,4 +19,8 @@ int libuiNewLabel(pa_context *ctx);
 int libuiLabelSetText(pa_context *ctx);
 int libuiLabelText(pa_context *ctx);
 int libuiNewButton(pa_context *ctx);
+int libuiNewCombobox(pa_context *ctx);
+int libuiComboboxAppend(pa_context *ctx);
+int libuiComboboxSelected(pa_context *ctx);
+int libuiComboboxSetSelected(pa_context *ctx);
 void libuiUnload();

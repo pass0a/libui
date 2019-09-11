@@ -23,6 +23,10 @@ static const pa_function_list_entry my_module_funcs[] = {
     { "labelText", libuiLabelText, PA_VARARGS /*nargs*/ },
     { "newButton", libuiNewButton, PA_VARARGS /*nargs*/ },
     { "controlShow", libuiControlShow, PA_VARARGS /*nargs*/ },
+    { "newCombobox", libuiNewCombobox, PA_VARARGS /*nargs*/ },
+    { "comboboxAppend", libuiComboboxAppend, PA_VARARGS /*nargs*/ },
+    { "comboboxSelected", libuiComboboxSelected, PA_VARARGS /*nargs*/ },
+    { "comboboxSetSelected", libuiComboboxSetSelected, PA_VARARGS /*nargs*/ },
     { 0, 0, 0 }
 };
 extern "C" int passoa_init(pa_plugin p) {
