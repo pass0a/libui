@@ -1,6 +1,6 @@
 import { uiWindow, uiButton, uiLabel, startLoop, uiHorizontalBox } from '../src/index';
 import { exec } from 'child_process';
-let x = new uiWindow('hello', 400, 320, 0);
+let x = new uiWindow('你好', 400, 320, 0);
 let g = new uiHorizontalBox();
 x.setChild(g);
 let label = new uiLabel('请先选择要处理的目录');

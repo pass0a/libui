@@ -173,9 +173,41 @@ int libuiGridAppend(pa_context *ctx) {
     return 0;
 }
 
-int libuiControlShow(pa_context *ctx) {
-    if(gp.is_pointer(ctx,0)){
-        uiControlShow(uiControl(gp.get_pointer(ctx, 0)));
+int libuiControlOp(pa_context *ctx) {
+    if(gp.is_pointer(ctx,0) && gp.is_number(ctx,1)){
+        switch (gp.get_int(ctx, 1))
+        {
+        case 0:
+            uiControlShow(uiControl(gp.get_pointer(ctx, 0)));
+            break;
+        case 1:
+            uiControlHide(uiControl(gp.get_pointer(ctx, 0)));
+            break;
+        case 2:
+            uiControlEnable(uiControl(gp.get_pointer(ctx, 0)));
+            break;
+        case 3:
+            uiControlDisable(uiControl(gp.get_pointer(ctx, 0)));
+            break;
+        case 4:
+            uiControlDestroy(uiControl(gp.get_pointer(ctx, 0)));
+            break;
+        case 5:
+            gp.push_int(ctx,uiControlVisible(uiControl(gp.get_pointer(ctx, 0))));
+            return 1;
+        case 6:
+            gp.push_int(ctx, uiControlEnabled(uiControl(gp.get_pointer(ctx, 0))));
+            return 1;
+        case 7:
+            gp.push_int(ctx, uiControlToplevel(uiControl(gp.get_pointer(ctx, 0))));
+            return 1;
+        case 8:
+            gp.push_pointer(ctx, uiControlParent(uiControl(gp.get_pointer(ctx, 0))));
+            return 1;
+        default:
+            break;
+        }
+        
     }
     return 0;
 }

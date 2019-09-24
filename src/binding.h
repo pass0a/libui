@@ -6,7 +6,7 @@ int libuiHook(pa_context *ctx);
 int libuiNewWindow(pa_context *ctx);
 int libuiStep(pa_context *ctx);
 int libuiRun(pa_context *ctx);
-int libuiControlShow(pa_context *ctx);
+int libuiControlOp(pa_context *ctx);
 int libuiWindowSetMargined(pa_context *ctx);
 int libuiWindowSetChild(pa_context *ctx);
 int libuiNewGrid(pa_context* ctx); 

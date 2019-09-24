@@ -49,6 +49,7 @@ typedef void* (*pa_ppi)(pa_context*, int);
 typedef void* (*pa_ppi3i)(pa_context*, int, int*);
 typedef bool(*pa_bpi)(pa_context*, int);
 typedef bool(*pa_vpu)(pa_context*, unsigned int);
+typedef const char* (*pa_spisi)(pa_context*, int ,char* ,unsigned int);
 
 typedef int(*pa_c_function)(pa_context *ctx);
 
@@ -104,6 +105,8 @@ struct pa_plugin {
     pa_ipi get_length;
     pa_bpi is_boolean;
     pa_bpi get_boolean;
+    pa_spisi to_locale_string;
+    pa_sps push_utf8_string;
 };
 
 template<typename T>

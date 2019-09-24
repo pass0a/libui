@@ -9,9 +9,6 @@ export class uiWindow extends uiControl {
 			console.log('closing');
 		});
 	}
-	show() {
-		bind.controlShow(this.handle);
-	}
 	close() {}
 	setMargined(margined: boolean) {}
 	getMargined(): boolean {

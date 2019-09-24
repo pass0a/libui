@@ -48,8 +48,8 @@ export function startLoop() {
 		}
 	}, 10);
 }
-export function controlShow(ptr: any) {
-	return ui.controlShow(ptr);
+export function controlOp(ptr: any, act: number) {
+	return ui.controlOp(ptr, act);
 }
 export function newWindow(title: string, width: number, heigth: number, isMember: number) {
 	return ui.newWindow(title, width, heigth, isMember);

@@ -22,7 +22,7 @@ static const pa_function_list_entry my_module_funcs[] = {
     { "labelSetText", libuiLabelSetText, PA_VARARGS /*nargs*/ },
     { "labelText", libuiLabelText, PA_VARARGS /*nargs*/ },
     { "newButton", libuiNewButton, PA_VARARGS /*nargs*/ },
-    { "controlShow", libuiControlShow, PA_VARARGS /*nargs*/ },
+    { "controlOp", libuiControlOp, PA_VARARGS /*nargs*/ },
     { "newCombobox", libuiNewCombobox, PA_VARARGS /*nargs*/ },
     { "comboboxAppend", libuiComboboxAppend, PA_VARARGS /*nargs*/ },
     { "comboboxSelected", libuiComboboxSelected, PA_VARARGS /*nargs*/ },
