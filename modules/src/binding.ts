@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import uiControl from './uiControl';
 if ('win32' == process.platform) {
 	process.env.Path = process.env.Path + ';' + __dirname;
 } else {
@@ -42,11 +43,16 @@ export function exit() {}
 
 export function startLoop() {
 	//ui.run();
-	let keep = setInterval(() => {
-		if (!ui.mainStep()) {
-			clearInterval(keep);
+	process.nextTick(() => {
+		if (ui.mainStep()) {
+			startLoop();
 		}
-	}, 10);
+	});
+	// let keep = setInterval(() => {
+	// 	if (!ui.mainStep()) {
+	// 		clearInterval(keep);
+	// 	}
+	// }, 10);
 }
 export function controlOp(ptr: any, act: number) {
 	return ui.controlOp(ptr, act);
@@ -136,4 +142,25 @@ export function progressBarSetValue(c: any, value: number): void {
 }
 export function msgBox(c: any, title: string, description: string, type: number): void {
 	return ui.msgBox(c, title, description, type);
+}
+export function newTab() {
+	return ui.newTab();
+}
+export function tabAppend(t: uiControl, name: string, c: uiControl) {
+	return ui.tabAppend(t, name, c);
+}
+export function tabInsertAt(t: uiControl, name: string, idx: number, c: uiControl) {
+	return ui.tabInsertAt(t, name, idx, c);
+}
+export function tabDelete(t: uiControl, idx: number) {
+	return ui.tabDelete(t, idx);
+}
+export function tabNumPages(t: uiControl) {
+	return ui.tabNumPages(t);
+}
+export function tabMargined(t: uiControl, idx: number) {
+	return ui.tabMargined(t, idx);
+}
+export function tabSetMargined(t: uiControl, idx: number, margined: number) {
+	return ui.tabSetMargined(t, idx, margined);
 }

@@ -1,6 +1,7 @@
 export { uiGrid } from './uiGrid';
 export { uiWindow } from './uiWindow';
 export { uiButton } from './uiButton';
+export { uiTab } from './uiTab';
 export { uiCombobox } from './uiCombobox';
 export { uiProgressBar } from './uiProgressBar';
 export { uiHorizontalBox, uiVerticalBox } from './uiBox';

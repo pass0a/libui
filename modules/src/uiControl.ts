@@ -22,6 +22,10 @@ export default class uiControl extends bind.uiEvent {
 		return bind.controlOp(this.handle, 7);
 	}
 	parent(): any {
-		return bind.controlOp(this.handle, 7);
+		let handle = bind.controlOp(this.handle, 8);
+		console.log('parent', handle);
+		if (bind.uiEvent.map.has(handle)) {
+			return bind.uiEvent.map.get(handle);
+		}
 	}
 }

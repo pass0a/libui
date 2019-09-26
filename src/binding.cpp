@@ -100,6 +100,57 @@ int libuiNewHorizontalBox(pa_context* ctx) {
     gp.push_pointer(ctx, uiNewHorizontalBox());
     return 1;
 }
+int libuiNewTab(pa_context* ctx) {
+    gp.push_pointer(ctx, uiNewTab());
+    return 1;
+}
+int libuiTabAppend(pa_context* ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_string(ctx, 1) && gp.is_pointer(ctx, 2)) {
+        void* p = gp.get_pointer(ctx, 0);
+        uiTabAppend(uiTab(gp.get_pointer(ctx, 0)),
+            gp.get_string(ctx,1),uiControl(gp.get_pointer(ctx, 2)));
+    }
+    return 0;
+}
+int libuiTabInsertAt(pa_context* ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_string(ctx, 1) && gp.is_number(ctx,2) && gp.is_pointer(ctx, 3)) {
+        uiTabInsertAt(uiTab(gp.get_pointer(ctx, 0)),
+            gp.get_string(ctx, 1),gp.get_int(ctx,2), uiControl(gp.get_pointer(ctx, 3)));
+    }
+    return 0;
+}
+int libuiTabDelete(pa_context* ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_number(ctx,1)) {
+        uiTabDelete(uiTab(gp.get_pointer(ctx, 0)),
+            gp.get_int(ctx,1));
+    }
+    return 0;
+}
+int libuiTabNumPages(pa_context* ctx) {
+    if (gp.is_pointer(ctx, 0)) {
+        gp.push_int(ctx,uiTabNumPages(uiTab(gp.get_pointer(ctx, 0))));
+    }
+    return 1;
+}
+int libuiTabMargined(pa_context* ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1)) {
+        uiTabMargined(uiTab(gp.get_pointer(ctx, 0)),
+            gp.get_int(ctx, 1));
+    }
+    return 0;
+}
+int libuiTabSetMargined(pa_context* ctx) {
+    if (gp.is_pointer(ctx, 0) && gp.is_number(ctx, 1) && gp.is_number(ctx, 2)) {
+        if (uiTabNumPages(uiTab(gp.get_pointer(ctx, 0)))>gp.get_int(ctx,1)) {
+            uiTabSetMargined(uiTab(gp.get_pointer(ctx, 0)),
+                gp.get_int(ctx, 1), gp.get_int(ctx, 2));
+        }
+        else {
+            gp.error(ctx, "error in libuiTabSetMargined:uiTabNumPages<=idx!!!");
+        }
+    }
+    return 0;
+}
 int libuiBoxAppend(pa_context* ctx) {
     if (gp.is_pointer(ctx, 0) && gp.is_pointer(ctx, 1) && gp.is_boolean(ctx, 2)) {
         uiBoxAppend(uiBox(gp.get_pointer(ctx, 0)),

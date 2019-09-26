@@ -2,11 +2,9 @@ import uiControl from './uiControl';
 import * as bind from './binding';
 
 class uiBox extends uiControl {
-	handle: uiControl;
 	private children = new Set<uiControl>();
 	constructor(hnd: uiControl) {
 		super(hnd);
-		this.handle = hnd;
 	}
 	onDestroy(control: uiControl) {}
 
